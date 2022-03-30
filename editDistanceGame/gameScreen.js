@@ -14,17 +14,17 @@ class gameScreen extends Phaser.Scene{
       
     //Called after preload. Gets the game setup process started
     create () {
-        //Calls the initializePage method below
-        this.initializePage(this);
         //Sets the first page as the first level. Each "page" will represent a new level
         const firstPage = this.fetchPage(1);
+        //Calls the initializePage method below
+        this.initializePage(this, firstPage);
         //Calls the displayPage method below
         this.displayPage(this, firstPage);
       };
       
       
       //Builds the initial visuals for the game
-      initializePage(scene) {
+      initializePage(scene, page) {
         if (!gameState.options) {
           //Creates an options list that will hold the box object created in the displayPage method
           gameState.options = [];
@@ -38,6 +38,21 @@ class gameScreen extends Phaser.Scene{
           gameState.narrative_background.setOrigin(0, 0);
         }
 
+        const narrativeStyle = { fill: '#ffffff', fontStyle: 'italic', align: 'center', wordWrap: { width: 340 }, lineSpacing: 8};
+        scene.add.text(50, 180, "Statement to Edit: ", narrativeStyle);
+        scene.add.text(50, 250, "Objective Statement: ", narrativeStyle);
+        gameState.changeTo = scene.add.text(50, 270, page.changeTo, narrativeStyle);
+        gameState.changeToText = [];
+        gameState.changeToTextBounds = [];
+
+        for (let i=0; i<page.changeTo.length; i++) {
+          let letter = page.changeTo[i];
+          //Adds a character to each box
+          const baseX = 40 + i * 20;
+          gameState.changeToText.push(scene.add.text(baseX, 460, letter, { fontSize:14, fill: '#b39c0e', align: 'center', wordWrap: {width: 110}}));
+          gameState.changeToTextBounds.push(gameState.changeToText[i].getBounds());
+        }
+
         
       }
       
@@ -47,22 +62,160 @@ class gameScreen extends Phaser.Scene{
         if (gameState.narrative) {
           gameState.narrative.destroy();
         }
+        
+        if(gameState.origStatement){
+          gameState.origStatement.destroy();
+        }
       
         for (let option of gameState.options) {
           option.origStatementBox.destroy();
           option.origStatementText.destroy();
         }
+
+
       }
-      
+
+      origStatementActions(scene, page, action) {
+        let origStateboxArr = [];
+        //For each letter in original (top) statement
+        for (let i=0; i<page.origStatement.length; i++) {
+          let letter = page.origStatement[i];
+
+  
+          //Creates a box for each individual letter
+          const origStatementBox = scene.add.rectangle(40 + i * 20, 400, 20, 20, 0xb39c0e, 0)
+          origStatementBox.strokeColor = 0xb39c0e;
+          origStatementBox.strokeWeight = 2;
+          origStatementBox.strokeAlpha = 1;
+          origStatementBox.isStroked = true;
+          origStatementBox.setOrigin(0, 0)
+
+          origStateboxArr.push(origStatementBox);
+              
+          const origStatementText = gameState.origStatementText[i];
+          const origStatementTextBounds = gameState.origStatementTextBounds[i];
+              
+          //Centers character within box
+          origStatementText.setX(origStatementTextBounds.x + 5 - (origStatementTextBounds.width / page.origStatement.length));
+          origStatementText.setY(origStatementTextBounds.y + 3 - (origStatementTextBounds.height / page.origStatement.length));
+
+          //Makes boxes interactive
+          origStatementBox.setInteractive();
+
+          var self = this;
+        
+          //What to do when box is clicked on
+          //WORK IN PROGRESS
+          origStatementBox.on('pointerup', function() {
+            if(action === "insert"){
+              let letter = window.prompt("enter letter to insert: ");
+              let selectedLetterIndex = origStateboxArr.indexOf(origStatementBox);
+              let origStatementHolder = page.origStatement;
+              let newStatement = "";
+              for (let i=0; i<origStatementHolder.length + 1; i++) {
+                if(i < selectedLetterIndex) {
+                  newStatement += origStatementHolder[i];
+                }else if (i == selectedLetterIndex) {
+                  newStatement += letter;
+                } else {
+                  newStatement += origStatementHolder[i - 1];
+                }
+              };
+
+              page.origStatement = newStatement;
+              self.destroyPage();
+              self.displayPage(scene, page);
+
+            } else if(action === "delete"){
+              let selectedLetterIndex = origStateboxArr.indexOf(origStatementBox);
+              let origStatementHolder = page.origStatement;
+              let newStatement = "";
+              for (let i=0; i<origStatementHolder.length - 1; i++) {
+                if(i < selectedLetterIndex) {
+                  newStatement += origStatementHolder[i];
+                } else {
+                  newStatement += origStatementHolder[i + 1];
+                }
+              };
+
+              page.origStatement = newStatement;
+              self.destroyPage();
+              self.displayPage(scene, page);
+
+            } else if(action === "substitute"){
+              let letter = window.prompt("enter letter to substitute: ");
+              let selectedLetterIndex = origStateboxArr.indexOf(origStatementBox);
+              let origStatementHolder = page.origStatement;
+              let newStatement = "";
+              for (let i=0; i<origStatementHolder.length; i++) {
+                if(i < selectedLetterIndex) {
+                  newStatement += origStatementHolder[i];
+                }else if (i == selectedLetterIndex) {
+                  newStatement += letter;
+                } else {
+                  newStatement += origStatementHolder[i];
+                }
+              };
+
+              page.origStatement = newStatement;
+              self.destroyPage();
+              self.displayPage(scene, page);
+
+            }
+
+          }, {  });
+
+          
+          
+          //What to do when the box is hovered over
+          origStatementBox.on('pointerover', function() {
+          origStatementBox.setStrokeStyle(2, 0xffe014, 1);
+          origStatementText.setColor('#ffe014');
+          }, {origStatementBox, origStatementText});
+                      
+          //What to do after box is hovered over
+          origStatementBox.on('pointerout', function() {
+          origStatementBox.setStrokeStyle(1, 0xb38c03, 1);
+          origStatementText.setColor('#b39c0e');
+          }, {origStatementBox, origStatementText});
+                
+          gameState.options.push({
+          origStatementBox,
+          origStatementText
+          });
+                  
+        
+        }
+
+      }
+    
+
       //Most of the work is being done here
       displayPage(scene, page) {
         //Text styling used
         const narrativeStyle = { fill: '#ffffff', fontStyle: 'italic', align: 'center', wordWrap: { width: 340 }, lineSpacing: 8};
         //Text in the top black box is added here
-        scene.add.text(50, 180, "Statement to Edit: ", narrativeStyle);
+        
         gameState.origStatement = scene.add.text(50, 200, page.origStatement, narrativeStyle);
-        scene.add.text(50, 250, "Objective Statement: ", narrativeStyle);
-        gameState.changeTo = scene.add.text(50, 270, page.changeTo, narrativeStyle);
+        
+        gameState.origStatementText = [];
+        gameState.origStatementTextBounds = [];
+
+        
+
+        for (let i=0; i<page.origStatement.length; i++) {
+          let letter = page.origStatement[i];
+          //Adds a character to each box
+          const baseX = 40 + i * 20;
+          gameState.origStatementText.push(scene.add.text(baseX, 400, letter, { fontSize:14, fill: '#b39c0e', align: 'center', wordWrap: {width: 110}}));
+          gameState.origStatementTextBounds.push(gameState.origStatementText[i].getBounds());
+        }
+
+
+
+
+        //Preserve reference for use in callback function below
+        var self = this;
 
         //Insert button created here
         const insertBox = scene.add.rectangle(80, 600, 75, 50, 0x000);
@@ -73,6 +226,21 @@ class gameScreen extends Phaser.Scene{
         insertBox.setInteractive();
         const insertBoxText = scene.add.text(55, 595, "Insert", { fontSize:14, fill: '#b39c0e', align: 'center', wordWrap: {width: 110}});
         const insertBoxTextBounds = insertBoxText.getBounds()
+
+        //What to do when the box is hovered over
+        insertBox.on('pointerover', function() {
+          this.insertBox.setStrokeStyle(2, 0xffe014, 1);
+          this.insertBoxText.setColor('#ffe014');
+        }, { insertBox, insertBoxText });
+        //What to do after box is hovered over
+        insertBox.on('pointerout', function() {
+          this.insertBox.setStrokeStyle(1, 0xb38c03, 1);
+          this.insertBoxText.setColor('#b39c0e');
+        }, { insertBox, insertBoxText });
+        //What to do when box is clicked on
+        insertBox.on('pointerup', function() {
+            self.origStatementActions(scene, page, "insert");
+        });
         
 
         //Delete button created here
@@ -85,6 +253,21 @@ class gameScreen extends Phaser.Scene{
         const deleteBoxText = scene.add.text(180, 595, "Delete", { fontSize:14, fill: '#b39c0e', align: 'center', wordWrap: {width: 110}});
         const deleteBoxTextBounds = deleteBoxText.getBounds()
 
+        //What to do when the box is hovered over
+        deleteBox.on('pointerover', function() {
+          this.deleteBox.setStrokeStyle(2, 0xffe014, 1);
+          this.deleteBoxText.setColor('#ffe014');
+        }, { deleteBox, deleteBoxText });
+        //What to do after box is hovered over
+        deleteBox.on('pointerout', function() {
+          this.deleteBox.setStrokeStyle(1, 0xb38c03, 1);
+          this.deleteBoxText.setColor('#b39c0e');
+        }, { deleteBox, deleteBoxText });
+        //What to do when box is clicked on
+        deleteBox.on('pointerup', function() {
+          self.origStatementActions(scene, page, "delete");
+        });
+
         //Substitute button created here
         const substituteBox = scene.add.rectangle(330, 600, 75, 50, 0x000);
         substituteBox.strokeColor = 0xb39c0e;
@@ -93,111 +276,23 @@ class gameScreen extends Phaser.Scene{
         substituteBox.isStroked = true;
         substituteBox.setInteractive();
         const substituteBoxText = scene.add.text(305, 595, "Substi.", { fontSize:14, fill: '#b39c0e', align: 'center', wordWrap: {width: 110}});
-        const substituteBoxTextBounds = deleteBoxText.getBounds()
+        const substituteBoxTextBounds = deleteBoxText.getBounds();
 
+        //What to do when the box is hovered over
+        substituteBox.on('pointerover', function() {
+          this.substituteBox.setStrokeStyle(2, 0xffe014, 1);
+          this.substituteBoxText.setColor('#ffe014');
+        }, { substituteBox, substituteBoxText });
+        //What to do after box is hovered over
+        substituteBox.on('pointerout', function() {
+          this.substituteBox.setStrokeStyle(1, 0xb38c03, 1);
+          this.substituteBoxText.setColor('#b39c0e');
+        }, { substituteBox, substituteBoxText });
+        //What to do when box is clicked on
+        substituteBox.on('pointerup', function() {
+          self.origStatementActions(scene, page, "substitute");
+        });
 
-
-        //For each letter in original (top) statement
-        for (let i=0; i<page.origStatement.length; i++) {
-          let letter = page.origStatement[i];
-      
-          //Creates a box for each individual letter
-          const origStatementBox = scene.add.rectangle(40 + i * 20, 400, 20, 20, 0xb39c0e, 0)
-          origStatementBox.strokeColor = 0xb39c0e;
-          origStatementBox.strokeWeight = 2;
-          origStatementBox.strokeAlpha = 1;
-          origStatementBox.isStroked = true;
-          origStatementBox.setOrigin(0, 0)
-      
-          //Adds a character to each box
-          const baseX = 40 + i * 20;
-          const origStatementText = scene.add.text(baseX, 400, letter, { fontSize:14, fill: '#b39c0e', align: 'center', wordWrap: {width: 110}});
-          const origStatementTextBounds = origStatementText.getBounds()
-      
-          //Centers character within box
-          origStatementText.setX(origStatementTextBounds.x + 5 - (origStatementTextBounds.width / page.origStatement.length));
-          origStatementText.setY(origStatementTextBounds.y + 3 - (origStatementTextBounds.height / page.origStatement.length));
-      
-          //Makes boxes interactive
-          origStatementBox.setInteractive();
-
-          //Preserve reference for use in callback function below
-          var self = this;
-
-          //What to do when box is clicked on
-          //WORK IN PROGRESS
-          origStatementBox.on('pointerup', function() {
-            //WORK IN PROGRESS
-            const newPage = this.option.nextPage;
-            if (newPage !== undefined) {
-            self.destroyPage();
-            self.displayPage(scene, self.fetchPage(newPage));
-            }
-          }, { letter });
-          gameState.options.push({
-          origStatementBox,
-          origStatementText
-          });
-          
-          //What to do when the box is hovered over
-          origStatementBox.on('pointerover', function() {
-            this.origStatementBox.setStrokeStyle(2, 0xffe014, 1);
-            this.origStatementText.setColor('#ffe014');
-          }, { origStatementBox, origStatementText });
-
-          //What to do after box is clicked on
-          origStatementBox.on('pointerout', function() {
-            this.origStatementBox.setStrokeStyle(1, 0xb38c03, 1);
-            this.origStatementText.setColor('#b39c0e');
-          }, { origStatementBox, origStatementText });
-        }
-
-        //This is setup exactly the same as the original statement loop directly above
-        //Only going to add additional commentary for any incremental changes to this loop
-        //This loop is for the changeTo word
-        for (let i=0; i<page.changeTo.length; i++) {
-          let letter = page.changeTo[i];
-      
-          const changeToBox = scene.add.rectangle(40 + i * 20, 460, 20, 20, 0xb39c0e, 0)
-          changeToBox.strokeColor = 0xb39c0e;
-          changeToBox.strokeWeight = 2;
-          changeToBox.strokeAlpha = 1;
-          changeToBox.isStroked = true;
-          changeToBox.setOrigin(0, 0)
-      
-          const baseX = 40 + i * 20;
-          const changeToText = scene.add.text(baseX, 460, letter, { fontSize:14, fill: '#b39c0e', align: 'center', wordWrap: {width: 110}});
-          const changeToTextBounds = changeToText.getBounds()
-      
-          changeToText.setX(changeToTextBounds.x + 5 - (changeToTextBounds.width / page.changeTo.length));
-          changeToText.setY(changeToTextBounds.y + 3 - (changeToTextBounds.height / page.changeTo.length));
-      
-          changeToBox.setInteractive();
-
-          var self = this;
-
-          changeToBox.on('pointerup', function() {
-            const newPage = this.option.nextPage;
-            if (newPage !== undefined) {
-            self.destroyPage();
-            self.displayPage(scene, self.fetchPage(newPage));
-            }
-          }, { letter });
-          gameState.options.push({
-            changeToBox,
-            changeToText
-          });
-
-          changeToBox.on('pointerover', function() {
-            this.changeToBox.setStrokeStyle(2, 0xffe014, 1);
-            this.changeToText.setColor('#ffe014');
-          }, { changeToBox, changeToText });
-
-          changeToBox.on('pointerout', function() {
-            this.changeToBox.setStrokeStyle(1, 0xb38c03, 1);
-            this.changeToText.setColor('#b39c0e');
-          }, { changeToBox, changeToText });
-        }
       }
     
       //This fetches the page aka level
