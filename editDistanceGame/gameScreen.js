@@ -10,6 +10,7 @@ class gameScreen extends Phaser.Scene{
     //If we decide to add any assets we can load them here
     preload () {
         // load in any assets
+        this.load.html('input', 'assets/inputform.html');
       }
       
     //Called after preload. Gets the game setup process started
@@ -21,8 +22,10 @@ class gameScreen extends Phaser.Scene{
         //Calls the displayPage method below
         this.displayPage(this, firstPage);
 
+        gameState.fetchCounter = 0;
+
         
-        
+
 
       };
 
@@ -60,8 +63,10 @@ class gameScreen extends Phaser.Scene{
           gameState.narrative_background.setOrigin(0, 0);
         }
 
+        
+
         gameState.userScore = 0;
-        gameState.algorithScore = editDistanceAlgorithm();
+        gameState.algorithScore = this.editDistanceAlgorithm();
         gameState.initialTime = 31;
         gameState.timerDisplay = this.add.text(175, 90, gameState.initialTime);
         this.time.addEvent({ delay: 1000, callback: this.onEvent, callbackScope: this, loop: true });
@@ -190,10 +195,6 @@ class gameScreen extends Phaser.Scene{
           option.origStatementBox.destroy();
           option.origStatementText.destroy();
         }
-
-        
-
-
       }
 
       origStatementActions(scene, page, action) {
@@ -218,9 +219,6 @@ class gameScreen extends Phaser.Scene{
           origStatementText.setX(origStatementTextBounds.x + 5 - (origStatementTextBounds.width / page.origStatement.length));
           origStatementText.setY(origStatementTextBounds.y + 3 - (origStatementTextBounds.height / page.origStatement.length));
 
-              
-          
-
           //Makes boxes interactive
           origStatementBox.setInteractive();
 
@@ -230,35 +228,41 @@ class gameScreen extends Phaser.Scene{
           //WORK IN PROGRESS
           origStatementBox.on('pointerup', function() {
             if(action === "insert"){
-              let letter = window.prompt("enter letter to insert: ");
-              let selectedLetterIndex = origStateboxArr.indexOf(origStatementBox);
-              let origStatementHolder = page.origStatement;
-              let newStatement = "";
-              for (let i=0; i<origStatementHolder.length + 1; i++) {
-                if(i < selectedLetterIndex) {
-                  newStatement += origStatementHolder[i];
-                }else if (i == selectedLetterIndex) {
-                  newStatement += letter;
-                } else {
-                  newStatement += origStatementHolder[i - 1];
-                }
-              };
-
-              page.origStatement = newStatement;
-              self.destroyPage();
-              if(page.origStatement === page.changeTo){
-                gameState.changeTo.destroy();
-                for (let option of gameState.changeToOptions) {
-                  option.destroy();
-                }
-                self.time.removeAllEvents();
-                self.initializePage(scene, self.fetchPage(page.nextPage));
-                self.displayPage(scene, self.fetchPage(page.nextPage));
-              } else{
-                self.displayPage(scene, page);
-              }
-              
-
+              let element = scene.add.dom(400, 50).createFromCache('input');
+              element.addListener('click');
+              element.on('click', function (event) {
+                if(event.target.name === 'playButton'){ 
+                  let inputChar = this.getChildByName('inputForm');
+                  let letter = inputChar.value;
+                  this.removeListener('click');
+                  this.destroy();
+                  let selectedLetterIndex = origStateboxArr.indexOf(origStatementBox);
+                  let origStatementHolder = page.origStatement;
+                  let newStatement = "";
+                  for (let i=0; i<origStatementHolder.length + 1; i++) {
+                    if(i < selectedLetterIndex) {
+                      newStatement += origStatementHolder[i];
+                    }else if (i == selectedLetterIndex) {
+                      newStatement += letter;
+                    } else {
+                      newStatement += origStatementHolder[i - 1];
+                    }
+                  };
+                  page.origStatement = newStatement;
+                  self.destroyPage();
+                  if(page.origStatement === page.changeTo){
+                    gameState.changeTo.destroy();
+                    for (let option of gameState.changeToOptions) {
+                      option.destroy();
+                    }
+                    self.time.removeAllEvents();
+                    self.initializePage(scene, self.fetchPage(page.nextPage));
+                    self.displayPage(scene, self.fetchPage(page.nextPage));
+                  } else{
+                    self.displayPage(scene, page);
+                  }
+                    }
+              })
             } else if(action === "delete"){
               let selectedLetterIndex = origStateboxArr.indexOf(origStatementBox);
               let origStatementHolder = page.origStatement;
@@ -380,18 +384,34 @@ class gameScreen extends Phaser.Scene{
         //Object containing the details for each level
         const pages = [
           {
-           origStatement: 'a cat!',
-           changeTo: 'the cats!',
+           origStatement: 'hey',
+           changeTo: 'hay',
            page: 1,
            nextPage: 2
          },
          {
-          origStatement: 'a cat and a hat',
-          changeTo: 'the cat and the hat!',
+          origStatement: 'the',
+          changeTo: 'tha',
           page: 2,
-          nextPage: 1
+          nextPage: 3
         }
         ]
+
+        if(page === 3){
+          if(gameState.fetchCounter === 0){
+            gameState.tempOrigStatement = window.prompt("enter origStatement: ");
+            gameState.tempChangeTo = window.prompt("enter changeTo: ");
+            gameState.fetchCounter =+ 1;
+          }
+          pages.push({
+            origStatement: gameState.tempOrigStatement,
+            changeTo: gameState.tempChangeTo,
+            page: 3,
+            nextPage: 1,
+          })
+        }
+
+
      
        return pages.find(function(e) { if(e.page == page) return e });
      }
