@@ -24,6 +24,8 @@ class gameScreen extends Phaser.Scene{
 
         gameState.fetchCounter = 0;
 
+        gameState.gameScene = this.scene;
+
         
 
 
@@ -34,9 +36,8 @@ class gameScreen extends Phaser.Scene{
         gameState.initialTime -= 1;
         gameState.timerDisplay = this.add.text(175, 90, gameState.initialTime);
         if(gameState.initialTime === 0){
-          gameState.timerDisplay = this.add.text(175, 90, "Game Over!");
-          this.time.removeAllEvents();
-          this.initializePage(this, this.fetchPage(1));
+          gameState.gameScene.stop('gameScreen');
+          gameState.gameScene.start('startScreen');
         }
       }
 
@@ -55,24 +56,35 @@ class gameScreen extends Phaser.Scene{
           gameState.changeToOptions = [];
         }
         
-        if (!gameState.narrative_background) {
-          //Creates the two black boxes where the objective is displayed and where the player modifies their statement
-          gameState.narrative_background = scene.add.rectangle(10, 160, 430, 170, 0x000);
-          gameState.narrative_background.setOrigin(0, 0);
-          gameState.narrative_background = scene.add.rectangle(10, 360, 430, 170, 0x000);
-          gameState.narrative_background.setOrigin(0, 0);
-        }
+        //Creates the two black boxes where the objective is displayed and where the player modifies their statement
+        gameState.narrative_background = scene.add.rectangle(10, 160, 430, 170, 0x000);
+        gameState.narrative_background.setOrigin(0, 0);
+        gameState.narrative_background = scene.add.rectangle(10, 360, 430, 170, 0x000);
+        gameState.narrative_background.setOrigin(0, 0);
+
 
         
 
         gameState.userScore = 0;
-        gameState.algorithScore = this.editDistanceAlgorithm();
+        gameState.algorithScore = this.editDistanceAlgorithm(gameState.origStatement, gameState.changeTo);
         gameState.initialTime = 31;
         gameState.timerDisplay = this.add.text(175, 90, gameState.initialTime);
         this.time.addEvent({ delay: 1000, callback: this.onEvent, callbackScope: this, loop: true });
         
 
         const narrativeStyle = { fill: '#ffffff', fontStyle: 'italic', align: 'center', wordWrap: { width: 340 }, lineSpacing: 8};
+        const userScoreBox = scene.add.rectangle(550, 200, 150, 80, 0x000);
+        userScoreBox.strokeColor = 0xb39c0e;
+        userScoreBox.strokeWeight = 2;
+        userScoreBox.strokeAlpha = 1;
+        userScoreBox.isStroked = true;
+        gameState.userScoreText = scene.add.text(500, 180, "User Score: \n" + gameState.userScore, narrativeStyle);
+        const algorithScoreBox = scene.add.rectangle(550, 300, 150, 80, 0x000);
+        algorithScoreBox.strokeColor = 0xb39c0e;
+        algorithScoreBox.strokeWeight = 2;
+        algorithScoreBox.strokeAlpha = 1;
+        algorithScoreBox.isStroked = true;
+        gameState.algorithScoreText = scene.add.text(485, 280, "Score to Beat: \n" + gameState.algorithScore, narrativeStyle);
         scene.add.text(50, 180, "Statement to Edit: ", narrativeStyle);
         scene.add.text(50, 250, "Objective Statement: ", narrativeStyle);
         gameState.changeTo = scene.add.text(50, 270, page.changeTo, narrativeStyle);
@@ -250,6 +262,14 @@ class gameScreen extends Phaser.Scene{
                   };
                   page.origStatement = newStatement;
                   self.destroyPage();
+                  gameState.userScoreText.destroy();
+                  gameState.userScore += 1;
+                  const narrativeStyle = { fill: '#ffffff', fontStyle: 'italic', align: 'center', wordWrap: { width: 340 }, lineSpacing: 8};
+                  gameState.userScoreText = scene.add.text(500, 180, "User Score: \n" + gameState.userScore, narrativeStyle);
+                  if(gameState.userScore > gameState.algorithScore){
+                    gameState.gameScene.stop('gameScreen');
+                    gameState.gameScene.start('startScreen');
+                  }
                   if(page.origStatement === page.changeTo){
                     gameState.changeTo.destroy();
                     for (let option of gameState.changeToOptions) {
@@ -277,6 +297,14 @@ class gameScreen extends Phaser.Scene{
 
               page.origStatement = newStatement;
               self.destroyPage();
+              gameState.userScoreText.destroy();
+              gameState.userScore += 1;
+              const narrativeStyle = { fill: '#ffffff', fontStyle: 'italic', align: 'center', wordWrap: { width: 340 }, lineSpacing: 8};
+              gameState.userScoreText = scene.add.text(500, 180, "User Score: \n" + gameState.userScore, narrativeStyle);
+              if(gameState.userScore > gameState.algorithScore){
+                gameState.gameScene.stop('gameScreen');
+                gameState.gameScene.start('startScreen');
+              }
               if(page.origStatement === page.changeTo){
                 gameState.changeTo.destroy();
                 for (let option of gameState.changeToOptions) {
@@ -312,6 +340,14 @@ class gameScreen extends Phaser.Scene{
                   };
                   page.origStatement = newStatement;
                   self.destroyPage();
+                  gameState.userScoreText.destroy();
+                  gameState.userScore += 1;
+                  const narrativeStyle = { fill: '#ffffff', fontStyle: 'italic', align: 'center', wordWrap: { width: 340 }, lineSpacing: 8};
+                  gameState.userScoreText = scene.add.text(500, 180, "User Score: \n" + gameState.userScore, narrativeStyle);
+                  if(gameState.userScore > gameState.algorithScore){
+                    gameState.gameScene.stop('gameScreen');
+                    gameState.gameScene.start('startScreen');
+                  }
                   if(page.origStatement === page.changeTo){
                     gameState.changeTo.destroy();
                     for (let option of gameState.changeToOptions) {
