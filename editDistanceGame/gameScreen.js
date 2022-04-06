@@ -40,7 +40,7 @@ class gameScreen extends Phaser.Scene{
         }
       }
 
-      editDistanceAlgorithm(){
+      editDistanceAlgorithm(originalWord, wordChangingTo){
 
         return 5;
       }
@@ -290,34 +290,41 @@ class gameScreen extends Phaser.Scene{
               }
 
             } else if(action === "substitute"){
-              let letter = window.prompt("enter letter to substitute: ");
-              let selectedLetterIndex = origStateboxArr.indexOf(origStatementBox);
-              let origStatementHolder = page.origStatement;
-              let newStatement = "";
-              for (let i=0; i<origStatementHolder.length; i++) {
-                if(i < selectedLetterIndex) {
-                  newStatement += origStatementHolder[i];
-                }else if (i == selectedLetterIndex) {
-                  newStatement += letter;
-                } else {
-                  newStatement += origStatementHolder[i];
+              let element = scene.add.dom(400, 50).createFromCache('input');
+              element.addListener('click');
+              element.on('click', function (event) {
+                if(event.target.name === 'playButton'){ 
+                  let inputChar = this.getChildByName('inputForm');
+                  let letter = inputChar.value;
+                  this.removeListener('click');
+                  this.destroy();
+                  let selectedLetterIndex = origStateboxArr.indexOf(origStatementBox);
+                  let origStatementHolder = page.origStatement;
+                  let newStatement = "";
+                  for (let i=0; i<origStatementHolder.length; i++) {
+                    if(i < selectedLetterIndex) {
+                      newStatement += origStatementHolder[i];
+                    }else if (i == selectedLetterIndex) {
+                      newStatement += letter;
+                    } else {
+                      newStatement += origStatementHolder[i];
+                    }
+                  };
+                  page.origStatement = newStatement;
+                  self.destroyPage();
+                  if(page.origStatement === page.changeTo){
+                    gameState.changeTo.destroy();
+                    for (let option of gameState.changeToOptions) {
+                      option.destroy();
+                    }
+                    self.time.removeAllEvents();
+                    self.initializePage(scene, self.fetchPage(page.nextPage));
+                    self.displayPage(scene, self.fetchPage(page.nextPage));
+                  } else{
+                    self.displayPage(scene, page);
+                  }
                 }
-              };
-
-              page.origStatement = newStatement;
-              self.destroyPage();
-              if(page.origStatement === page.changeTo){
-                gameState.changeTo.destroy();
-                for (let option of gameState.changeToOptions) {
-                  option.destroy();
-                }
-                self.time.removeAllEvents();
-                self.initializePage(scene, self.fetchPage(page.nextPage));
-                self.displayPage(scene, self.fetchPage(page.nextPage));
-              } else{
-                self.displayPage(scene, page);
-              }
-
+              })
             }
 
           }, {});
@@ -399,8 +406,16 @@ class gameScreen extends Phaser.Scene{
 
         if(page === 3){
           if(gameState.fetchCounter === 0){
+            window.alert("For this last level you get to enter the original statement and the statement to edit it to. This will prove that our algorithm for calculating"
+            + " edit distance actually works! (please note only first 20 characters are used)");
             gameState.tempOrigStatement = window.prompt("enter origStatement: ");
+            if(gameState.tempOrigStatement.length > 20){
+              gameState.tempOrigStatement = gameState.tempOrigStatement.slice(0, 20);
+            }
             gameState.tempChangeTo = window.prompt("enter changeTo: ");
+            if(gameState.tempChangeTo.length > 20){
+              gameState.tempChangeTo = gameState.tempChangeTo.slice(0, 20);
+            }
             gameState.fetchCounter =+ 1;
           }
           pages.push({
