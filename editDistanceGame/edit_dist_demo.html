@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="edit_dist.js"></script>
+</head>
+<body>
+
+<p id="demo1"></p>
+<p id="demo2"></p>
+<p id="demo3"></p>
+
+<script>
+[time1, dist1, time2, dist2, time3, dist3] = edit_dist_test("leukopoiesesbbbaaaccc", "leukopedesesaaabbbccc");
+
+document.getElementById("demo1").innerHTML = time1 + "," + dist1;
+document.getElementById("demo2").innerHTML = time2 + "," + dist2;
+document.getElementById("demo3").innerHTML = time3 + "," + dist3;
+</script>
+ 
+</body>
+</html>
