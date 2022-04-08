@@ -42,8 +42,10 @@ class gameScreen extends Phaser.Scene{
       }
 
       editDistanceAlgorithm(originalWord, wordChangingTo){
-
-        return levenshtein1(originalWord, wordChangingTo);
+        gameState.algorithScore = levenshtein3(originalWord, wordChangingTo);
+        //Returns time in milliseconds
+        gameState.algorithTime = edit_dist_test(originalWord, wordChangingTo)[0];
+        gameState.algorithTime.toFixed(2);
       }
 
       
@@ -66,7 +68,7 @@ class gameScreen extends Phaser.Scene{
         
 
         gameState.userScore = 0;
-        gameState.algorithScore = this.editDistanceAlgorithm(page.origStatement, page.changeTo);
+        this.editDistanceAlgorithm(page.origStatement, page.changeTo);
         gameState.initialTime = 31;
         gameState.timerDisplay = this.add.text(175, 90, gameState.initialTime);
         this.time.addEvent({ delay: 1000, callback: this.onEvent, callbackScope: this, loop: true });

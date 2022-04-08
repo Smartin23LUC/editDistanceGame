@@ -5,9 +5,8 @@ const gameState = {
 const config = {
 	type: Phaser.AUTO,
 	parent: 'phaser-game',
-	width: 700,
+	width: 900,
 	height: 800,
-	backgroundColor: 'F8B392',
 	dom: {
 		createContainer: true
 	},

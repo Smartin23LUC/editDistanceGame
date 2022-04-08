@@ -4,20 +4,57 @@ class startScreen extends Phaser.Scene {
     }
   
     preload() {
-
+      this.load.image('bg', 'assets/startScreenBG.png');
     }
   
     create() {
-      // Creates the text on the start screen:
-      this.add.text(10, 50, " Edit Distance \n   Challenge" , { fill: '#4D39E0', fontSize: '45px' });
-      this.add.text(50, 520, '       Click to start!\nBy: Stephen Martin & Yong Shao', { fill: '#4D39E0', fontSize: '20px' });
-              
-      this.input.on('pointerup', () => {
-        // Add logic to transition from StartScene to GameScene:
-        this.scene.stop('startScreen');
-        this.scene.start('gameScreen');
-              
+      this.add.image(450,400,'bg');
+
+      const startBox = this.add.rectangle(325, 450, 150, 100, 0x00FFFF);
+      startBox.setStrokeStyle(8, 0xD8BFD8);
+      startBox.setInteractive();
+      const startBoxText = this.add.text(270, 418, "Start", { fontSize:60, fontFamily:'Britannic Bold', fill: '#6666FF',
+       align: 'center', wordWrap: {width: 110}});
+      
+      startBox.on('pointerover', function() {
+        startBox.setStrokeStyle(2, 0xffe014, 1);
+        startBoxText.setColor('#ffe014');
+      }, {});
+
+      startBox.on('pointerout', function() {
+        startBox.setStrokeStyle(8, 0xD8BFD8);
+        startBoxText.setColor('#6666FF');
+      }, {});
+
+      const howToPlayBox = this.add.rectangle(525, 450, 150, 100, 0x00FFFF);
+      howToPlayBox.setStrokeStyle(8, 0xD8BFD8);
+      howToPlayBox.setInteractive();
+      const howToPlayBoxText = this.add.text(470, 418, "How to Play", { fontSize:34, fontFamily:'Britannic Bold', fill: '#6666FF',
+       align: 'center', wordWrap: {width: 110}});
+      
+      howToPlayBox.on('pointerover', function() {
+        howToPlayBox.setStrokeStyle(2, 0xffe014, 1);
+        howToPlayBoxText.setColor('#ffe014');
+      }, {});
+
+      howToPlayBox.on('pointerout', function() {
+        howToPlayBox.setStrokeStyle(8, 0xD8BFD8);
+        howToPlayBoxText.setColor('#6666FF');
+      }, {});
+
+      let self = this;
+
+      startBox.on('pointerup', function() {
+        self.scene.stop('startScreen');
+        self.scene.start('gameScreen');
       });
+
+      howToPlayBox.on('pointerup', function() {
+        self.scene.stop('startScreen');
+        self.scene.start('gameScreen');
+      });
+              
+
   
   
     }
