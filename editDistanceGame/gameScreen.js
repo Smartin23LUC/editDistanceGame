@@ -11,10 +11,12 @@ class gameScreen extends Phaser.Scene{
     preload () {
         // load in any assets
         this.load.html('input', 'assets/inputform.html');
+        this.load.image('sunset', 'assets/sunsetbackground.png');
       }
       
     //Called after preload. Gets the game setup process started
     create () {
+        this.add.image(450,400,'sunset');
         //Sets the first page as the first level. Each "page" will represent a new level
         const firstPage = this.fetchPage(1);
         //Calls the initializePage method below
@@ -43,9 +45,6 @@ class gameScreen extends Phaser.Scene{
 
       editDistanceAlgorithm(originalWord, wordChangingTo){
         gameState.algorithScore = levenshtein3(originalWord, wordChangingTo);
-        //Returns time in milliseconds
-        gameState.algorithTime = edit_dist_test(originalWord, wordChangingTo)[0];
-        gameState.algorithTime.toFixed(2);
       }
 
       
