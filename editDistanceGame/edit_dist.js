@@ -68,6 +68,12 @@ const levenshtein2 = (a, b) => {
 }
 
 dist_cache = new Map();
+
+function levenshtein3_reset()
+{
+    dist_cache.clear();
+}
+
 const levenshtein3 = (a, b) => {
   if (a.length === 0) return b.length;
   if (b.length === 0) return a.length;
@@ -111,6 +117,7 @@ function edit_dist_test(source, target)
     var startTime = performance.now();
     const dist3 = levenshtein3(source, target);
     const time3 = performance.now() - startTime;
+    levenshtein3_reset();
     
     return [time1, dist1, time2, dist2, time3, dist3];
 }
