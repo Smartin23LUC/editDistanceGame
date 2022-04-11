@@ -36,7 +36,7 @@ class gameScreen extends Phaser.Scene{
       onEvent(){
         gameState.timerDisplay.destroy();
         gameState.initialTime -= 1;
-        gameState.timerDisplay = this.add.text(175, 90, gameState.initialTime);
+        gameState.timerDisplay = this.add.text(365, 60, gameState.initialTime, {fontSize: 80, fontFamily:'Britannic Bold', fill:'#000000'});
         if(gameState.initialTime === 0){
           gameState.gameScene.stop('gameScreen');
           gameState.gameScene.start('startScreen');
@@ -58,23 +58,25 @@ class gameScreen extends Phaser.Scene{
         }
         
         //Creates the two black boxes where the objective is displayed and where the player modifies their statement
-        gameState.narrative_background = scene.add.rectangle(200, 160, 430, 170, 0x000);
+        gameState.narrative_background = scene.add.rectangle(195, 170, 430, 200, 0xEAEDED);
+        gameState.narrative_background.setStrokeStyle(8, 0xFADAB7);
         gameState.narrative_background.setOrigin(0, 0);
-        gameState.narrative_background = scene.add.rectangle(200, 360, 430, 170, 0x000);
+        gameState.narrative_background = scene.add.rectangle(195, 400, 430, 100, 0xEAEDED);
+        gameState.narrative_background.setStrokeStyle(8, 0xFADAB7);
         gameState.narrative_background.setOrigin(0, 0);
+        
 
 
         
 
         gameState.userScore = 0;
         this.editDistanceAlgorithm(page.origStatement, page.changeTo);
-        gameState.initialTime = 31;
-        gameState.timerDisplay = this.add.text(175, 90, gameState.initialTime);
-        this.time.addEvent({ delay: 1000, callback: this.onEvent, callbackScope: this, loop: true });
+        gameState.initialTime = 30;
+        
         
 
-        gameState.narrativeStyle = { fill: '#ffffff', fontStyle: 'italic', align: 'center', wordWrap: { width: 100 }, lineSpacing: 8};
-        const narrativeStyle2 = { fill: '#ffffff', fontStyle: 'italic', align: 'center', wordWrap: { width: 300 }, lineSpacing: 8};
+        gameState.narrativeStyle = { fill: '#FDFEFE', fontStyle: 'italic', align: 'left', wordWrap: { width: 100 }, lineSpacing: 8};
+        const narrativeStyle2 = { fill: '#0x000', fontStyle: 'italic', align: 'center', fontSize:22, fontFamily:'Britannic Bold', wordWrap: { width: 300 }, lineSpacing: 8};
         const userScoreBox = scene.add.rectangle(770, 200, 120, 80, 0x000);
         userScoreBox.strokeColor = 0xb39c0e;
         userScoreBox.strokeWeight = 2;
@@ -89,9 +91,14 @@ class gameScreen extends Phaser.Scene{
         algorithScoreBox.strokeAlpha = 1;
         algorithScoreBox.isStroked = true;
         gameState.algorithScoreText = scene.add.text(725, 265, "Score to Beat: " + gameState.algorithScore, gameState.narrativeStyle);
-        scene.add.text(300, 180, "Statement to Edit: ", narrativeStyle2);
-        scene.add.text(300, 250, "Objective Statement: ", narrativeStyle2);
-        gameState.changeTo = scene.add.text(300, 270, page.changeTo, narrativeStyle2);
+        scene.add.text(210, 220, "Statement to Edit: ", narrativeStyle2);
+        scene.add.text(210, 290, "Objective Statement: ", narrativeStyle2);
+        scene.add.text(325, 175, "Current State",{ fill: '#0x000', align: 'center',
+         fontSize:32, fontFamily:'Britannic Bold', wordWrap: { width: 300 }, lineSpacing: 8} )
+        scene.add.text(325, 405, "Workspace",{ fill: '#0x000', align: 'center',
+         fontSize:32, fontFamily:'Britannic Bold', wordWrap: { width: 300 }, lineSpacing: 8} )
+        gameState.changeTo = scene.add.text(220, 320, page.changeTo, { fill: '#1ADE9C', fontStyle: 'bold', align: 'center', fontSize:30, fontFamily:'Britannic Bold',
+         wordWrap: { width: 300 }, lineSpacing: 8});
         gameState.changeToText = [];
         gameState.changeToTextBounds = [];
 
@@ -176,13 +183,12 @@ class gameScreen extends Phaser.Scene{
         });
         
         //Substitute button created here
-        const timerBox = scene.add.rectangle(225, 100, 150, 50, 0x000);
-        timerBox.strokeColor = 0xb39c0e;
-        timerBox.strokeWeight = 2;
-        timerBox.strokeAlpha = 1;
-        timerBox.isStroked = true;
-        const timerBoxText = scene.add.text(165, 77, "Time Remaining!", { fontSize:14, fill: '#b39c0e', align: 'center', wordWrap: {width: 150}});
+        const timerBox = scene.add.rectangle(410, 80, 300, 130, 0xEAEDED);
+        timerBox.setStrokeStyle(5,0xD8BFD8);
+        const timerBoxText = scene.add.text(300, 20, "Time Remaining!", { fontSize:32, fontFamily:'Britannic Bold', fill: '#D37DFA', align: 'center', wordWrap: {width: 300}});
         const timerBoxTextBounds = timerBoxText.getBounds();
+        gameState.timerDisplay = this.add.text(365, 60, gameState.initialTime, {fontSize: 80, fontFamily:'Britannic Bold', fill:'#000000'});
+        this.time.addEvent({ delay: 1000, callback: this.onEvent, callbackScope: this, loop: true });
 
         
       }
@@ -210,9 +216,9 @@ class gameScreen extends Phaser.Scene{
         for (let i=0; i<page.origStatement.length + 1; i++) {
   
           //Creates a box for each individual letter
-          const origStatementBox = scene.add.rectangle(210 + i * 20, 425, 20, 30, 0xb39c0e, 0)
-          origStatementBox.strokeColor = 0xb39c0e;
-          origStatementBox.strokeWeight = 2;
+          const origStatementBox = scene.add.rectangle(205 + i * 20, 450, 20, 30, 0xb39c0e, 0)
+          origStatementBox.strokeColor = 0x45D1CB;
+          origStatementBox.strokeWeight = 4;
           origStatementBox.strokeAlpha = 1;
           origStatementBox.isStroked = true;
           origStatementBox.setOrigin(0, 0)
@@ -361,14 +367,14 @@ class gameScreen extends Phaser.Scene{
           
           //What to do when the box is hovered over
           origStatementBox.on('pointerover', function() {
-          origStatementBox.setStrokeStyle(2, 0xffe014, 1);
-          origStatementText.setColor('#ffe014');
+          origStatementBox.setStrokeStyle(4, 0x45D1CB, 1);
+          origStatementText.setColor('#E8318F');
           }, {origStatementBox, origStatementText});
                       
           //What to do after box is hovered over
           origStatementBox.on('pointerout', function() {
-          origStatementBox.setStrokeStyle(1, 0xb38c03, 1);
-          origStatementText.setColor('#b39c0e');
+          origStatementBox.setStrokeStyle(1, 0x45D1CB, 1);
+          origStatementText.setColor('#45D1CB');
           }, {origStatementBox, origStatementText});
                 
           gameState.options.push({
@@ -384,11 +390,12 @@ class gameScreen extends Phaser.Scene{
 
       //Most of the work is being done here
       displayPage(scene, page) {
-        //Text styling used
-        const narrativeStyle = { fill: '#ffffff', fontStyle: 'italic', align: 'center', wordWrap: { width: 340 }, lineSpacing: 8};
+
         //Text in the top black box is added here
         
-        gameState.origStatement = scene.add.text(300, 200, page.origStatement, narrativeStyle);
+        gameState.origStatement = scene.add.text(220, 247, page.origStatement,
+          { fill: '#EF1C1C', fontStyle: 'bold', align: 'center', fontSize:30, fontFamily:'Britannic Bold',
+          wordWrap: { width: 300 }, lineSpacing: 8});
         
         gameState.origStatementText = [];
         gameState.origStatementTextBounds = [];
@@ -397,14 +404,14 @@ class gameScreen extends Phaser.Scene{
 
         for (let i=0; i<page.origStatement.length + 1; i++) {
           //Adds a character to each box
-          const baseX = 210 + i * 20;
+          const baseX = 205 + i * 20;
           if (i === page.origStatement.length){
             let letter = "";
-            gameState.origStatementText.push(scene.add.text(baseX, 425, letter, { fontSize:25, fill: '#b39c0e', align: 'center', wordWrap: {width: 110}}));
+            gameState.origStatementText.push(scene.add.text(baseX, 455, letter, { fontSize:18, fill: '#45D1CB', align: 'center', wordWrap: {width: 110}}));
             gameState.origStatementTextBounds.push(gameState.origStatementText[i].getBounds());
           } else {
           let letter = page.origStatement[i];
-          gameState.origStatementText.push(scene.add.text(baseX, 425, letter, { fontSize:25, fill: '#b39c0e', align: 'center', wordWrap: {width: 110}}));
+          gameState.origStatementText.push(scene.add.text(baseX, 455, letter, { fontSize:18, fill: '#45D1CB', fontStyle:'bold', align: 'center', wordWrap: {width: 110}}));
           gameState.origStatementTextBounds.push(gameState.origStatementText[i].getBounds());
           }
         }

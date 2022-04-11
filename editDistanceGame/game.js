@@ -10,6 +10,7 @@ const config = {
 	dom: {
 		createContainer: true
 	},
+	// scene:[gameScreen],
 	scene:[startScreen,gameScreen],
   };
 
