@@ -58,9 +58,9 @@ class gameScreen extends Phaser.Scene{
         }
         
         //Creates the two black boxes where the objective is displayed and where the player modifies their statement
-        gameState.narrative_background = scene.add.rectangle(10, 160, 430, 170, 0x000);
+        gameState.narrative_background = scene.add.rectangle(200, 160, 430, 170, 0x000);
         gameState.narrative_background.setOrigin(0, 0);
-        gameState.narrative_background = scene.add.rectangle(10, 360, 430, 170, 0x000);
+        gameState.narrative_background = scene.add.rectangle(200, 360, 430, 170, 0x000);
         gameState.narrative_background.setOrigin(0, 0);
 
 
@@ -73,34 +73,28 @@ class gameScreen extends Phaser.Scene{
         this.time.addEvent({ delay: 1000, callback: this.onEvent, callbackScope: this, loop: true });
         
 
-        const narrativeStyle = { fill: '#ffffff', fontStyle: 'italic', align: 'center', wordWrap: { width: 340 }, lineSpacing: 8};
-        const userScoreBox = scene.add.rectangle(550, 200, 150, 80, 0x000);
+        gameState.narrativeStyle = { fill: '#ffffff', fontStyle: 'italic', align: 'center', wordWrap: { width: 100 }, lineSpacing: 8};
+        const narrativeStyle2 = { fill: '#ffffff', fontStyle: 'italic', align: 'center', wordWrap: { width: 300 }, lineSpacing: 8};
+        const userScoreBox = scene.add.rectangle(770, 200, 120, 80, 0x000);
         userScoreBox.strokeColor = 0xb39c0e;
         userScoreBox.strokeWeight = 2;
         userScoreBox.strokeAlpha = 1;
         userScoreBox.isStroked = true;
-        gameState.userScoreText = scene.add.text(500, 180, "User Score: \n" + gameState.userScore, narrativeStyle);
-        const algorithScoreBox = scene.add.rectangle(550, 300, 150, 80, 0x000);
+        gameState.userScoreX = 725;
+        gameState.userScoreY = 180;
+        gameState.userScoreText = scene.add.text(gameState.userScoreX, gameState.userScoreY, "User Score: " + gameState.userScore, gameState.narrativeStyle);
+        const algorithScoreBox = scene.add.rectangle(770, 285, 120, 80, 0x000);
         algorithScoreBox.strokeColor = 0xb39c0e;
         algorithScoreBox.strokeWeight = 2;
         algorithScoreBox.strokeAlpha = 1;
         algorithScoreBox.isStroked = true;
-        gameState.algorithScoreText = scene.add.text(485, 280, "Score to Beat: \n" + gameState.algorithScore, narrativeStyle);
-        scene.add.text(50, 180, "Statement to Edit: ", narrativeStyle);
-        scene.add.text(50, 250, "Objective Statement: ", narrativeStyle);
-        gameState.changeTo = scene.add.text(50, 270, page.changeTo, narrativeStyle);
+        gameState.algorithScoreText = scene.add.text(725, 265, "Score to Beat: " + gameState.algorithScore, gameState.narrativeStyle);
+        scene.add.text(300, 180, "Statement to Edit: ", narrativeStyle2);
+        scene.add.text(300, 250, "Objective Statement: ", narrativeStyle2);
+        gameState.changeTo = scene.add.text(300, 270, page.changeTo, narrativeStyle2);
         gameState.changeToText = [];
         gameState.changeToTextBounds = [];
 
-        for (let i=0; i<page.changeTo.length; i++) {
-          let letter = page.changeTo[i];
-          //Adds a character to each box
-          const baseX = 40 + i * 20;
-          gameState.changeToText.push(scene.add.text(baseX, 460, letter, { fontSize:14, fill: '#b39c0e', align: 'center', wordWrap: {width: 110}}));
-          gameState.changeToTextBounds.push(gameState.changeToText[i].getBounds());
-          const changeToTex = gameState.changeToText[i];
-          gameState.changeToOptions.push(changeToTex);
-        }
 
                 //Preserve reference for use in callback function below
         var self = this;
@@ -216,7 +210,7 @@ class gameScreen extends Phaser.Scene{
         for (let i=0; i<page.origStatement.length + 1; i++) {
   
           //Creates a box for each individual letter
-          const origStatementBox = scene.add.rectangle(40 + i * 20, 400, 20, 20, 0xb39c0e, 0)
+          const origStatementBox = scene.add.rectangle(210 + i * 20, 425, 20, 30, 0xb39c0e, 0)
           origStatementBox.strokeColor = 0xb39c0e;
           origStatementBox.strokeWeight = 2;
           origStatementBox.strokeAlpha = 1;
@@ -229,7 +223,7 @@ class gameScreen extends Phaser.Scene{
           const origStatementTextBounds = gameState.origStatementTextBounds[i];
               
           //Centers character within box
-          origStatementText.setX(origStatementTextBounds.x + 5 - (origStatementTextBounds.width / page.origStatement.length));
+          origStatementText.setX(origStatementTextBounds.x + 3 - (origStatementTextBounds.width / page.origStatement.length));
           origStatementText.setY(origStatementTextBounds.y + 3 - (origStatementTextBounds.height / page.origStatement.length));
 
           //Makes boxes interactive
@@ -265,8 +259,7 @@ class gameScreen extends Phaser.Scene{
                   self.destroyPage();
                   gameState.userScoreText.destroy();
                   gameState.userScore += 1;
-                  const narrativeStyle = { fill: '#ffffff', fontStyle: 'italic', align: 'center', wordWrap: { width: 340 }, lineSpacing: 8};
-                  gameState.userScoreText = scene.add.text(500, 180, "User Score: \n" + gameState.userScore, narrativeStyle);
+                  gameState.userScoreText = scene.add.text(gameState.userScoreX, gameState.userScoreY, "User Score: " + gameState.userScore, gameState.narrativeStyle);
                   if(gameState.userScore > gameState.algorithScore){
                     gameState.gameScene.stop('gameScreen');
                     gameState.gameScene.start('startScreen');
@@ -300,8 +293,7 @@ class gameScreen extends Phaser.Scene{
               self.destroyPage();
               gameState.userScoreText.destroy();
               gameState.userScore += 1;
-              const narrativeStyle = { fill: '#ffffff', fontStyle: 'italic', align: 'center', wordWrap: { width: 340 }, lineSpacing: 8};
-              gameState.userScoreText = scene.add.text(500, 180, "User Score: \n" + gameState.userScore, narrativeStyle);
+              gameState.userScoreText = scene.add.text(gameState.userScoreX, gameState.userScoreY, "User Score: " + gameState.userScore, gameState.narrativeStyle);
               if(gameState.userScore > gameState.algorithScore){
                 gameState.gameScene.stop('gameScreen');
                 gameState.gameScene.start('startScreen');
@@ -343,8 +335,7 @@ class gameScreen extends Phaser.Scene{
                   self.destroyPage();
                   gameState.userScoreText.destroy();
                   gameState.userScore += 1;
-                  const narrativeStyle = { fill: '#ffffff', fontStyle: 'italic', align: 'center', wordWrap: { width: 340 }, lineSpacing: 8};
-                  gameState.userScoreText = scene.add.text(500, 180, "User Score: \n" + gameState.userScore, narrativeStyle);
+                  gameState.userScoreText = scene.add.text(gameState.userScoreX, gameState.userScoreY, "User Score: " + gameState.userScore, gameState.narrativeStyle);
                   if(gameState.userScore > gameState.algorithScore){
                     gameState.gameScene.stop('gameScreen');
                     gameState.gameScene.start('startScreen');
@@ -397,7 +388,7 @@ class gameScreen extends Phaser.Scene{
         const narrativeStyle = { fill: '#ffffff', fontStyle: 'italic', align: 'center', wordWrap: { width: 340 }, lineSpacing: 8};
         //Text in the top black box is added here
         
-        gameState.origStatement = scene.add.text(50, 200, page.origStatement, narrativeStyle);
+        gameState.origStatement = scene.add.text(300, 200, page.origStatement, narrativeStyle);
         
         gameState.origStatementText = [];
         gameState.origStatementTextBounds = [];
@@ -405,17 +396,15 @@ class gameScreen extends Phaser.Scene{
         
 
         for (let i=0; i<page.origStatement.length + 1; i++) {
+          //Adds a character to each box
+          const baseX = 210 + i * 20;
           if (i === page.origStatement.length){
             let letter = "";
-            //Adds a character to each box
-            const baseX = 40 + i * 20;
-            gameState.origStatementText.push(scene.add.text(baseX, 400, letter, { fontSize:14, fill: '#b39c0e', align: 'center', wordWrap: {width: 110}}));
+            gameState.origStatementText.push(scene.add.text(baseX, 425, letter, { fontSize:25, fill: '#b39c0e', align: 'center', wordWrap: {width: 110}}));
             gameState.origStatementTextBounds.push(gameState.origStatementText[i].getBounds());
           } else {
           let letter = page.origStatement[i];
-          //Adds a character to each box
-          const baseX = 40 + i * 20;
-          gameState.origStatementText.push(scene.add.text(baseX, 400, letter, { fontSize:14, fill: '#b39c0e', align: 'center', wordWrap: {width: 110}}));
+          gameState.origStatementText.push(scene.add.text(baseX, 425, letter, { fontSize:25, fill: '#b39c0e', align: 'center', wordWrap: {width: 110}}));
           gameState.origStatementTextBounds.push(gameState.origStatementText[i].getBounds());
           }
         }
@@ -428,8 +417,8 @@ class gameScreen extends Phaser.Scene{
         //Object containing the details for each level
         const pages = [
           {
-           origStatement: 'hey',
-           changeTo: 'hay',
+           origStatement: 'testing testing test',
+           changeTo: 'resting resting rest',
            page: 1,
            nextPage: 2
          },
