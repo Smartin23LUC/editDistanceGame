@@ -264,7 +264,7 @@ class gameScreen extends Phaser.Scene{
                   page.origStatement = newStatement;
                   self.destroyPage();
                   gameState.userScoreText.destroy();
-                  gameState.userScore += 1;
+                  gameState.userScore += letter.length;
                   gameState.userScoreText = scene.add.text(gameState.userScoreX, gameState.userScoreY, "User Score: " + gameState.userScore, gameState.narrativeStyle);
                   if(gameState.userScore > gameState.algorithScore){
                     gameState.gameScene.stop('gameScreen');
@@ -340,7 +340,7 @@ class gameScreen extends Phaser.Scene{
                   page.origStatement = newStatement;
                   self.destroyPage();
                   gameState.userScoreText.destroy();
-                  gameState.userScore += 1;
+                  gameState.userScore += letter.length;
                   gameState.userScoreText = scene.add.text(gameState.userScoreX, gameState.userScoreY, "User Score: " + gameState.userScore, gameState.narrativeStyle);
                   if(gameState.userScore > gameState.algorithScore){
                     gameState.gameScene.stop('gameScreen');
