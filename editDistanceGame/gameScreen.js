@@ -39,7 +39,7 @@ class gameScreen extends Phaser.Scene{
         gameState.timerDisplay = this.add.text(365, 60, gameState.initialTime, {fontSize: 80, fontFamily:'Britannic Bold', fill:'#000000'});
         if(gameState.initialTime === 0){
           gameState.gameScene.stop('gameScreen');
-          gameState.gameScene.start('startScreen');
+          gameState.gameScene.start('endScreen');
         }
       }
 
@@ -268,7 +268,7 @@ class gameScreen extends Phaser.Scene{
                   gameState.userScoreText = scene.add.text(gameState.userScoreX, gameState.userScoreY, "User Score: " + gameState.userScore, gameState.narrativeStyle);
                   if(gameState.userScore > gameState.algorithScore){
                     gameState.gameScene.stop('gameScreen');
-                    gameState.gameScene.start('startScreen');
+                    gameState.gameScene.start('endScreen');
                   }
                   if(page.origStatement === page.changeTo){
                     gameState.changeTo.destroy();
@@ -302,7 +302,7 @@ class gameScreen extends Phaser.Scene{
               gameState.userScoreText = scene.add.text(gameState.userScoreX, gameState.userScoreY, "User Score: " + gameState.userScore, gameState.narrativeStyle);
               if(gameState.userScore > gameState.algorithScore){
                 gameState.gameScene.stop('gameScreen');
-                gameState.gameScene.start('startScreen');
+                gameState.gameScene.start('endScreen');
               }
               if(page.origStatement === page.changeTo){
                 gameState.changeTo.destroy();
@@ -344,7 +344,7 @@ class gameScreen extends Phaser.Scene{
                   gameState.userScoreText = scene.add.text(gameState.userScoreX, gameState.userScoreY, "User Score: " + gameState.userScore, gameState.narrativeStyle);
                   if(gameState.userScore > gameState.algorithScore){
                     gameState.gameScene.stop('gameScreen');
-                    gameState.gameScene.start('startScreen');
+                    gameState.gameScene.start('endScreen');
                   }
                   if(page.origStatement === page.changeTo){
                     gameState.changeTo.destroy();
