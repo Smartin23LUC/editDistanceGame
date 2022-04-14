@@ -75,22 +75,20 @@ class gameScreen extends Phaser.Scene{
         
         
 
-        gameState.narrativeStyle = { fill: '#FDFEFE', fontStyle: 'italic', align: 'left', wordWrap: { width: 100 }, lineSpacing: 8};
+        gameState.narrativeStyle = { fill: '#0x000', fontStyle: 'italic', align: 'left', fontSize:22, fontFamily:'Britannic Bold', wordWrap: { width: 100 }, lineSpacing: 8};
         const narrativeStyle2 = { fill: '#0x000', fontStyle: 'italic', align: 'center', fontSize:22, fontFamily:'Britannic Bold', wordWrap: { width: 300 }, lineSpacing: 8};
-        const userScoreBox = scene.add.rectangle(770, 200, 120, 80, 0x000);
-        userScoreBox.strokeColor = 0xb39c0e;
-        userScoreBox.strokeWeight = 2;
-        userScoreBox.strokeAlpha = 1;
-        userScoreBox.isStroked = true;
+        const userScoreBox = scene.add.rectangle(700, 170, 120, 80, 0xEAEDED);
+        userScoreBox.setStrokeStyle(8, 0xFCBFDF );
+        userScoreBox.setOrigin(0, 0);
         gameState.userScoreX = 725;
         gameState.userScoreY = 180;
-        gameState.userScoreText = scene.add.text(gameState.userScoreX, gameState.userScoreY, "User Score: " + gameState.userScore, gameState.narrativeStyle);
-        const algorithScoreBox = scene.add.rectangle(770, 285, 120, 80, 0x000);
-        algorithScoreBox.strokeColor = 0xb39c0e;
-        algorithScoreBox.strokeWeight = 2;
-        algorithScoreBox.strokeAlpha = 1;
-        algorithScoreBox.isStroked = true;
-        gameState.algorithScoreText = scene.add.text(725, 265, "Score to Beat: " + gameState.algorithScore, gameState.narrativeStyle);
+        gameState.userScoreText = scene.add.text(gameState.userScoreX, gameState.userScoreY, "User Score: " + gameState.userScore,
+        { fill: '#0x000', fontStyle: 'italic', align: 'left', fontSize:22, fontFamily:'Britannic Bold', wordWrap: { width: 100 }, lineSpacing: 8});
+        const algorithScoreBox = scene.add.rectangle(700, 285, 120, 80, 0xEAEDED);
+        algorithScoreBox.setStrokeStyle(8, 0xFBFCBF );
+        algorithScoreBox.setOrigin(0, 0);
+        gameState.algorithScoreText = scene.add.text(725, 295, "Score to Beat: " + gameState.algorithScore, 
+        { fill: '#0x000', fontStyle: 'italic', align: 'left', fontSize:22, fontFamily:'Britannic Bold', wordWrap: { width: 100 }, lineSpacing: 8});
         scene.add.text(210, 220, "Statement to Edit: ", narrativeStyle2);
         scene.add.text(210, 290, "Objective Statement: ", narrativeStyle2);
         scene.add.text(325, 175, "Current State",{ fill: '#0x000', align: 'center',
@@ -107,13 +105,12 @@ class gameScreen extends Phaser.Scene{
         var self = this;
 
         //Insert button created here
-        const insertBox = scene.add.rectangle(80, 600, 75, 50, 0x000);
-        insertBox.strokeColor = 0xb39c0e;
-        insertBox.strokeWeight = 2;
-        insertBox.strokeAlpha = 1;
-        insertBox.isStroked = true;
+        const insertBox = scene.add.rectangle(190, 550, 125, 100, 0xEAEDED);
+        insertBox.setStrokeStyle(8, 0xBFCCFC );
+        insertBox.setOrigin(0, 0);
         insertBox.setInteractive();
-        const insertBoxText = scene.add.text(55, 595, "Insert", { fontSize:14, fill: '#b39c0e', align: 'center', wordWrap: {width: 110}});
+        const insertBoxText = scene.add.text(223, 590, "Insert", 
+        { fill: '#0x000', fontStyle: 'bold', align: 'left', fontSize:22, fontFamily:'Britannic Bold', wordWrap: { width: 100 }, lineSpacing: 8});
         const insertBoxTextBounds = insertBoxText.getBounds()
 
                 //What to do when the box is hovered over
@@ -123,8 +120,8 @@ class gameScreen extends Phaser.Scene{
         }, { insertBox, insertBoxText });
         //What to do after box is hovered over
         insertBox.on('pointerout', function() {
-          this.insertBox.setStrokeStyle(1, 0xb38c03, 1);
-          this.insertBoxText.setColor('#b39c0e');
+          this.insertBox.setStrokeStyle(8, 0xBFCCFC );
+          this.insertBoxText.setColor('#0x000');
         }, { insertBox, insertBoxText });
         //What to do when box is clicked on
         insertBox.on('pointerup', function() {
@@ -133,13 +130,12 @@ class gameScreen extends Phaser.Scene{
         
 
         //Delete button created here
-        const deleteBox = scene.add.rectangle(205, 600, 75, 50, 0x000);
-        deleteBox.strokeColor = 0xb39c0e;
-        deleteBox.strokeWeight = 2;
-        deleteBox.strokeAlpha = 1;
-        deleteBox.isStroked = true;
+        const deleteBox = scene.add.rectangle(345, 550, 125, 100, 0xEAEDED);
+        deleteBox.setStrokeStyle(8, 0xBFCCFC );
+        deleteBox.setOrigin(0, 0);
         deleteBox.setInteractive();
-        const deleteBoxText = scene.add.text(180, 595, "Delete", { fontSize:14, fill: '#b39c0e', align: 'center', wordWrap: {width: 110}});
+        const deleteBoxText = scene.add.text(378, 590, "Delete", 
+        { fill: '#0x000', fontStyle: 'bold', align: 'left', fontSize:22, fontFamily:'Britannic Bold', wordWrap: { width: 100 }, lineSpacing: 8});
         const deleteBoxTextBounds = deleteBoxText.getBounds()
 
         //What to do when the box is hovered over
@@ -149,8 +145,8 @@ class gameScreen extends Phaser.Scene{
         }, { deleteBox, deleteBoxText });
         //What to do after box is hovered over
         deleteBox.on('pointerout', function() {
-          this.deleteBox.setStrokeStyle(1, 0xb38c03, 1);
-          this.deleteBoxText.setColor('#b39c0e');
+          this.deleteBox.setStrokeStyle(8, 0xBFCCFC );
+          this.deleteBoxText.setColor('#0x000');
         }, { deleteBox, deleteBoxText });
         //What to do when box is clicked on
         deleteBox.on('pointerup', function() {
@@ -158,13 +154,12 @@ class gameScreen extends Phaser.Scene{
         });
 
         //Substitute button created here
-        const substituteBox = scene.add.rectangle(330, 600, 75, 50, 0x000);
-        substituteBox.strokeColor = 0xb39c0e;
-        substituteBox.strokeWeight = 2;
-        substituteBox.strokeAlpha = 1;
-        substituteBox.isStroked = true;
+        const substituteBox = scene.add.rectangle(500, 550, 125, 100, 0xEAEDED);
+        substituteBox.setStrokeStyle(8, 0xBFCCFC );
+        substituteBox.setOrigin(0, 0);
         substituteBox.setInteractive();
-        const substituteBoxText = scene.add.text(305, 595, "Substi.", { fontSize:14, fill: '#b39c0e', align: 'center', wordWrap: {width: 110}});
+        const substituteBoxText = scene.add.text(515, 590, "Substitute", 
+        { fill: '#0x000', fontStyle: 'bold', align: 'left', fontSize:22, fontFamily:'Britannic Bold', wordWrap: { width: 100 }, lineSpacing: 8});
         const substituteBoxTextBounds = substituteBoxText.getBounds();
 
         //What to do when the box is hovered over
@@ -174,8 +169,8 @@ class gameScreen extends Phaser.Scene{
         }, { substituteBox, substituteBoxText });
         //What to do after box is hovered over
         substituteBox.on('pointerout', function() {
-          this.substituteBox.setStrokeStyle(1, 0xb38c03, 1);
-          this.substituteBoxText.setColor('#b39c0e');
+          this.substituteBox.setStrokeStyle(8, 0xBFCCFC );
+          this.substituteBoxText.setColor('#0x000');
         }, { substituteBox, substituteBoxText });
         //What to do when box is clicked on
         substituteBox.on('pointerup', function() {
@@ -241,7 +236,7 @@ class gameScreen extends Phaser.Scene{
           //WORK IN PROGRESS
           origStatementBox.on('pointerup', function() {
             if(action === "insert"){
-              let element = scene.add.dom(400, 50).createFromCache('input');
+              let element = scene.add.dom(400, 700).createFromCache('input');
               element.addListener('click');
               element.on('click', function (event) {
                 if(event.target.name === 'playButton'){ 
@@ -317,7 +312,7 @@ class gameScreen extends Phaser.Scene{
               }
 
             } else if(action === "substitute"){
-              let element = scene.add.dom(400, 50).createFromCache('input');
+              let element = scene.add.dom(400, 700).createFromCache('input');
               element.addListener('click');
               element.on('click', function (event) {
                 if(event.target.name === 'playButton'){ 
