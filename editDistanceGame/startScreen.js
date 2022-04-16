@@ -29,7 +29,7 @@ class startScreen extends Phaser.Scene {
       const howToPlayBox = this.add.rectangle(525, 450, 150, 100, 0x00FFFF);
       howToPlayBox.setStrokeStyle(8, 0xD8BFD8);
       howToPlayBox.setInteractive();
-      const howToPlayBoxText = this.add.text(480, 418, "How to Play", { fontSize:34, fontFamily:'Britannic Bold', fill: '#6666FF',
+      const howToPlayBoxText = this.add.text(475, 418, "How to Play", { fontSize:34, fontFamily:'Britannic Bold', fill: '#6666FF',
        align: 'center', fontStyle:'bold', wordWrap: {width: 110}});
       
       howToPlayBox.on('pointerover', function() {
@@ -51,7 +51,7 @@ class startScreen extends Phaser.Scene {
 
       howToPlayBox.on('pointerup', function() {
         self.scene.stop('startScreen');
-        self.scene.start('gameScreen');
+        self.scene.start('howToPlay');
       });
               
 

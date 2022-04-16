@@ -11,7 +11,7 @@ const config = {
 		createContainer: true
 	},
 	//scene:[gameScreen],
-	scene:[startScreen,gameScreen,endScreen],
+	scene:[startScreen,howToPlay,gameScreen,endScreen],
   };
 
 
