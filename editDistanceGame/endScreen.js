@@ -10,52 +10,37 @@ class endScreen extends Phaser.Scene {
     create() {
       this.add.image(450,400,'endscreen');
 
-      const startBox = this.add.rectangle(325, 450, 150, 100, 0x00FFFF);
-      startBox.setStrokeStyle(8, 0xD8BFD8);
-      startBox.setInteractive();
-      const startBoxText = this.add.text(260, 418, "Start", { fontSize:60, fontFamily:'Britannic Bold', fontStyle:'bold', fill: '#6666FF',
+      if(gameState.winStatus){
+        const homeBoxText = this.add.text(360, 200, "You Win!", { fontSize:60, fontFamily:'Britannic Bold', fontStyle:'bold', fill: '#ffe014',
+       align: 'center', wordWrap: {width: 110}});
+      }else{
+        const homeBoxText = this.add.text(360, 200, "You Lose!", { fontSize:60, fontFamily:'Britannic Bold', fontStyle:'bold', fill: '#ffe014',
+       align: 'center', wordWrap: {width: 110}});
+      }
+
+      const homeBox = this.add.rectangle(420, 450, 200, 100, 0x00FFFF);
+      homeBox.setStrokeStyle(8, 0xD8BFD8);
+      homeBox.setInteractive();
+      const homeBoxText = this.add.text(345, 418, "Home", { fontSize:60, fontFamily:'Britannic Bold', fontStyle:'bold', fill: '#6666FF',
        align: 'center', wordWrap: {width: 110}});
       
-      startBox.on('pointerover', function() {
-        startBox.setStrokeStyle(2, 0xffe014, 1);
-        startBoxText.setColor('#ffe014');
+       homeBox.on('pointerover', function() {
+        homeBox.setStrokeStyle(2, 0xffe014, 1);
+        homeBoxText.setColor('#ffe014');
       }, {});
 
-      startBox.on('pointerout', function() {
-        startBox.setStrokeStyle(8, 0xD8BFD8);
-        startBoxText.setColor('#6666FF');
+      homeBox.on('pointerout', function() {
+        homeBox.setStrokeStyle(8, 0xD8BFD8);
+        homeBoxText.setColor('#6666FF');
       }, {});
 
-      const howToPlayBox = this.add.rectangle(525, 450, 150, 100, 0x00FFFF);
-      howToPlayBox.setStrokeStyle(8, 0xD8BFD8);
-      howToPlayBox.setInteractive();
-      const howToPlayBoxText = this.add.text(480, 418, "How to Play", { fontSize:34, fontFamily:'Britannic Bold', fill: '#6666FF',
-       align: 'center', fontStyle:'bold', wordWrap: {width: 110}});
-      
-      howToPlayBox.on('pointerover', function() {
-        howToPlayBox.setStrokeStyle(2, 0xffe014, 1);
-        howToPlayBoxText.setColor('#ffe014');
-      }, {});
 
-      howToPlayBox.on('pointerout', function() {
-        howToPlayBox.setStrokeStyle(8, 0xD8BFD8);
-        howToPlayBoxText.setColor('#6666FF');
-      }, {});
 
       let self = this;
 
-      startBox.on('pointerup', function() {
-        self.scene.stop('startScreen');
-        self.scene.start('gameScreen');
+      homeBox.on('pointerup', function() {
+        self.scene.stop('endScreen');
+        self.scene.start('startScreen');
       });
-
-      howToPlayBox.on('pointerup', function() {
-        self.scene.stop('startScreen');
-        self.scene.start('gameScreen');
-      });
-              
-
-  
-  
-    }
+      }
   }

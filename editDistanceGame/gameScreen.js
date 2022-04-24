@@ -23,14 +23,9 @@ class gameScreen extends Phaser.Scene{
         this.initializePage(this, firstPage);
         //Calls the displayPage method below
         this.displayPage(this, firstPage);
-
         gameState.fetchCounter = 0;
-
         gameState.gameScene = this.scene;
-
-        
-
-
+        gameState.winStatus = true;
       };
 
       onEvent(){
@@ -38,6 +33,7 @@ class gameScreen extends Phaser.Scene{
         gameState.initialTime -= 1;
         gameState.timerDisplay = this.add.text(365, 60, gameState.initialTime, {fontSize: 80, fontFamily:'Britannic Bold', fill:'#000000'});
         if(gameState.initialTime === 0){
+          gameState.winStatus = false;
           gameState.gameScene.stop('gameScreen');
           gameState.gameScene.start('endScreen');
         }
@@ -207,8 +203,12 @@ class gameScreen extends Phaser.Scene{
 
       origStatementActions(scene, page, action) {
         let origStateboxArr = [];
+        let y = 0
+        if(action=="insert"){
+          y = 1
+        }
         //For each letter in original (top) statement
-        for (let i=0; i<page.origStatement.length + 1; i++) {
+        for (let i=0; i<page.origStatement.length + y; i++) {
   
           //Creates a box for each individual letter
           const origStatementBox = scene.add.rectangle(205 + i * 20, 450, 20, 30, 0xb39c0e, 0)
@@ -262,6 +262,7 @@ class gameScreen extends Phaser.Scene{
                   gameState.userScore += letter.length;
                   gameState.userScoreText = scene.add.text(gameState.userScoreX, gameState.userScoreY, "User Score: " + gameState.userScore, gameState.narrativeStyle);
                   if(gameState.userScore > gameState.algorithScore){
+                    gameState.winStatus = false;
                     gameState.gameScene.stop('gameScreen');
                     gameState.gameScene.start('endScreen');
                   }
@@ -296,6 +297,7 @@ class gameScreen extends Phaser.Scene{
               gameState.userScore += 1;
               gameState.userScoreText = scene.add.text(gameState.userScoreX, gameState.userScoreY, "User Score: " + gameState.userScore, gameState.narrativeStyle);
               if(gameState.userScore > gameState.algorithScore){
+                gameState.winStatus = false;
                 gameState.gameScene.stop('gameScreen');
                 gameState.gameScene.start('endScreen');
               }
@@ -338,6 +340,7 @@ class gameScreen extends Phaser.Scene{
                   gameState.userScore += letter.length;
                   gameState.userScoreText = scene.add.text(gameState.userScoreX, gameState.userScoreY, "User Score: " + gameState.userScore, gameState.narrativeStyle);
                   if(gameState.userScore > gameState.algorithScore){
+                    gameState.winStatus = false;
                     gameState.gameScene.stop('gameScreen');
                     gameState.gameScene.start('endScreen');
                   }
@@ -415,6 +418,11 @@ class gameScreen extends Phaser.Scene{
     
       //This fetches the page aka level
       fetchPage(page) {
+
+        if(page === 4){
+          gameState.gameScene.stop('gameScreen');
+          gameState.gameScene.start('endScreen');
+        }
     
         //Object containing the details for each level
         const pages = [
@@ -429,6 +437,12 @@ class gameScreen extends Phaser.Scene{
           changeTo: 'tha',
           page: 2,
           nextPage: 3
+        },
+        {
+          origStatement: 'game',
+          changeTo: 'over',
+          page: 4,
+          nextPage: 1
         }
         ]
 
@@ -450,7 +464,7 @@ class gameScreen extends Phaser.Scene{
             origStatement: gameState.tempOrigStatement,
             changeTo: gameState.tempChangeTo,
             page: 3,
-            nextPage: 1,
+            nextPage: 4,
           })
         }
 
