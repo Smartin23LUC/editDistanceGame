@@ -16,6 +16,7 @@ class gameScreen extends Phaser.Scene{
       
     //Called after preload. Gets the game setup process started
     create () {
+        //Add background image
         this.add.image(450,400,'sunset');
         //Sets the first page as the first level. Each "page" will represent a new level
         const firstPage = this.fetchPage(1);
@@ -25,21 +26,31 @@ class gameScreen extends Phaser.Scene{
         this.displayPage(this, firstPage);
         gameState.fetchCounter = 0;
         gameState.gameScene = this.scene;
+        //If set to true, player wins, else, player loses
         gameState.winStatus = true;
       };
 
+      //Function created to get the timer to countdown from 30
       onEvent(){
+        //Destroy the time that was displayed previously
         gameState.timerDisplay.destroy();
+        //Reduce the previous time by 1
         gameState.initialTime -= 1;
+        //Add the time back, but at the reduced number
         gameState.timerDisplay = this.add.text(365, 60, gameState.initialTime, {fontSize: 80, fontFamily:'Britannic Bold', fill:'#000000'});
+        //If the timer equals 0, end the game
         if(gameState.initialTime === 0){
+          //Player loses
           gameState.winStatus = false;
           gameState.gameScene.stop('gameScreen');
           gameState.gameScene.start('endScreen');
         }
       }
 
+      //Call our most efficient Levenshtein algorithm 
       editDistanceAlgorithm(originalWord, wordChangingTo){
+        //Set score to edit distance calculated using Levenshtein distance. 
+        //This score is displayed in the game as the score to match
         gameState.algorithScore = levenshtein3(originalWord, wordChangingTo);
       }
 
@@ -53,7 +64,7 @@ class gameScreen extends Phaser.Scene{
           gameState.changeToOptions = [];
         }
         
-        //Creates the two black boxes where the objective is displayed and where the player modifies their statement
+        //Creates the two boxes where the objective is displayed and where the player modifies their statement
         gameState.narrative_background = scene.add.rectangle(195, 170, 430, 200, 0xEAEDED);
         gameState.narrative_background.setStrokeStyle(8, 0xFADAB7);
         gameState.narrative_background.setOrigin(0, 0);
@@ -61,16 +72,14 @@ class gameScreen extends Phaser.Scene{
         gameState.narrative_background.setStrokeStyle(8, 0xFADAB7);
         gameState.narrative_background.setOrigin(0, 0);
         
-
-
-        
-
+        //Set player score to 0
         gameState.userScore = 0;
+        //Call our Levenshtein algorithm on the two related statements
         this.editDistanceAlgorithm(page.origStatement, page.changeTo);
+        //Set starting time for timer to 30 seconds
         gameState.initialTime = 30;
         
-        
-
+        //Below is setting the styling and text for what is displayed on the gameScreen
         gameState.narrativeStyle = { fill: '#0x000', fontStyle: 'italic', align: 'left', fontSize:22, fontFamily:'Britannic Bold', wordWrap: { width: 100 }, lineSpacing: 8};
         const narrativeStyle2 = { fill: '#0x000', fontStyle: 'italic', align: 'center', fontSize:22, fontFamily:'Britannic Bold', wordWrap: { width: 300 }, lineSpacing: 8};
         const userScoreBox = scene.add.rectangle(700, 170, 120, 80, 0xEAEDED);
@@ -97,7 +106,7 @@ class gameScreen extends Phaser.Scene{
         gameState.changeToTextBounds = [];
 
 
-                //Preserve reference for use in callback function below
+        //Preserve reference for use in callback function below
         var self = this;
 
         //Insert button created here
@@ -109,7 +118,7 @@ class gameScreen extends Phaser.Scene{
         { fill: '#0x000', fontStyle: 'bold', align: 'left', fontSize:22, fontFamily:'Britannic Bold', wordWrap: { width: 100 }, lineSpacing: 8});
         const insertBoxTextBounds = insertBoxText.getBounds()
 
-                //What to do when the box is hovered over
+        //What to do when the box is hovered over
         insertBox.on('pointerover', function() {
           this.insertBox.setStrokeStyle(2, 0xffe014, 1);
           this.insertBoxText.setColor('#ffe014');
@@ -201,10 +210,14 @@ class gameScreen extends Phaser.Scene{
         }
       }
 
+      //The different interactions that a player has with their workspace are created here
       origStatementActions(scene, page, action) {
+        //Create an array to hold the boxes that will be added around each letter in the workspace
         let origStateboxArr = [];
         let y = 0
         if(action=="insert"){
+          //If the user selects to insert we want to add one extra box than what the string's length is
+          //That way they can add a letter to the end
           y = 1
         }
         //For each letter in original (top) statement
@@ -217,9 +230,7 @@ class gameScreen extends Phaser.Scene{
           origStatementBox.strokeAlpha = 1;
           origStatementBox.isStroked = true;
           origStatementBox.setOrigin(0, 0)
-
           origStateboxArr.push(origStatementBox);
-
           const origStatementText = gameState.origStatementText[i];
           const origStatementTextBounds = gameState.origStatementTextBounds[i];
               
@@ -230,14 +241,17 @@ class gameScreen extends Phaser.Scene{
           //Makes boxes interactive
           origStatementBox.setInteractive();
 
+          //Preserve state
           var self = this;
         
           //What to do when box is clicked on
-          //WORK IN PROGRESS
           origStatementBox.on('pointerup', function() {
             if(action === "insert"){
+              //Call the HTML input form
               let element = scene.add.dom(400, 700).createFromCache('input');
+              //Add listener
               element.addListener('click');
+              //On click
               element.on('click', function (event) {
                 if(event.target.name === 'playButton'){ 
                   let inputChar = this.getChildByName('inputForm');
@@ -419,6 +433,7 @@ class gameScreen extends Phaser.Scene{
       //This fetches the page aka level
       fetchPage(page) {
 
+        //If all levels are complete, end game
         if(page === 4){
           gameState.gameScene.stop('gameScreen');
           gameState.gameScene.start('endScreen');
@@ -446,6 +461,7 @@ class gameScreen extends Phaser.Scene{
         }
         ]
 
+        //Special case with browser prompt
         if(page === 3){
           if(gameState.fetchCounter === 0){
             window.alert("For this last level you get to enter the original statement and the statement to edit it to. This will prove that our algorithm for calculating"
